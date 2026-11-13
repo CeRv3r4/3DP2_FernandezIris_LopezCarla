@@ -48,6 +48,7 @@ public class FPSController : MonoBehaviour
     [Header("Shooting")]
     public Camera m_Camera;
     public int m_ShootButton = 0;
+    public int m_ShootButtonOrange = 1;
     public float m_MaxShootDistance = 200f;
     public LayerMask m_ShootLayerMask;
 
@@ -194,6 +195,10 @@ public class FPSController : MonoBehaviour
         {
             Shoot(m_BluePortal);
         }
+        if (CanShoot() && MustShootOrange())
+        {
+            Shoot(m_OrangePortal);
+        }
 
         if (CanGrabObject())
         {
@@ -250,6 +255,10 @@ public class FPSController : MonoBehaviour
             {
                 ThrowAttachedObject(m_ShootAttachedObjectForce);
             }
+            else if (Input.GetMouseButtonDown(m_ShootButtonOrange))
+            {
+                ThrowAttachedObject(m_ShootAttachedObjectForce);
+            }
         }
     }
 
@@ -278,6 +287,11 @@ public class FPSController : MonoBehaviour
     bool MustShoot()
     {
         return Input.GetMouseButtonDown(m_ShootButton);
+    }
+
+    bool MustShootOrange()
+    {
+        return Input.GetMouseButtonDown(m_ShootButtonOrange);
     }
     void Shoot(Portal _Portal)
     {
