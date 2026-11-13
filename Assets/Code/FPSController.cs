@@ -287,9 +287,19 @@ public class FPSController : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit l_RaycastHit, m_MaxShootDistance, m_ShootLayerMask.value))
         {
             if (_Portal.IsValidPosition(l_RaycastHit.point, l_RaycastHit.normal))
+            {
+                _Portal.transform.position = l_RaycastHit.point + l_RaycastHit.normal * 0.05f;  // per a que no traspasi el mirror dins la paret
+                _Portal.transform.rotation = Quaternion.LookRotation(l_RaycastHit.normal);
+
                 _Portal.gameObject.SetActive(true);
+
+            }
             else
+            {
                 _Portal.gameObject.SetActive(false);
+
+            }
+
             //if (hit.collider.CompareTag("HitCollider"))
             //{
             //    hit.collider.GetComponent<HitCollider>().Hit();
