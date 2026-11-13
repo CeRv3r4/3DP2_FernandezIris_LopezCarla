@@ -191,18 +191,23 @@ public class FPSController : MonoBehaviour
         //    UpdateLifeBarEnemies();
         //}
 
-        if (CanShoot() && MustShoot())
-        {
-            Shoot(m_BluePortal);
-        }
-        if (CanShoot() && MustShootOrange())
-        {
-            Shoot(m_OrangePortal);
-        }
 
-        if (CanGrabObject())
+        if(!m_AttachingObject && !m_ObjectAttached && CanShoot())
         {
-            GrabObject();
+            if (MustShoot())
+            {
+                Shoot(m_BluePortal);
+            }
+            if (MustShootOrange())
+            {
+                Shoot(m_OrangePortal);
+            }
+
+            if (CanGrabObject())
+            {
+                GrabObject();
+            }
+
         }
         UpdateAttachingObject();
         UpdateAttachedObject();

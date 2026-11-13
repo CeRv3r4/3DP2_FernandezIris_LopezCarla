@@ -40,12 +40,14 @@ public class CompanionCube : MonoBehaviour
         Vector3 l_LocalForward = _Portal.m_OtherPortalTransform.InverseTransformDirection(l_WorldForward);
         Vector3 l_LocalLinearVelocity = _Portal.m_OtherPortalTransform.InverseTransformDirection(l_WorldLinearVelocity);
 
-       //float l_Scale = _Portal.m_MirrorPortal.transform.localScale.x/ _Portal.transform.localScale.x; // per fer el cub mes petit
+        float l_Scale = _Portal.m_MirrorPortal.transform.localScale.x/ _Portal.transform.localScale.x; // per fer el cub mes petit
+        
         m_Rigidbody.isKinematic = true;
         transform.position = _Portal.m_MirrorPortal.transform.TransformPoint(l_LocalPosition);
         transform.forward = _Portal.m_MirrorPortal.transform.TransformDirection(l_LocalForward);
         m_Rigidbody.isKinematic = false;
         m_Rigidbody.linearVelocity = _Portal.m_MirrorPortal.transform.TransformDirection(l_LocalLinearVelocity);
-        //transform.localScale = Vector3.one * transform.localScale.x * l_Scale;  // per fer el cub mes petit
+        
+        transform.localScale = Vector3.one * transform.localScale.x * l_Scale;  // per fer el cub mes petit
     }
 }
