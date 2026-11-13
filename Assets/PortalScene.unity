@@ -875,6 +875,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7622817077518716080, guid: e0c936e03bf5f5f489b5e96ec3fe6c64, type: 3}
+      propertyPath: m_LaserLayerMask.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
     - target: {fileID: 8516755674034503900, guid: e0c936e03bf5f5f489b5e96ec3fe6c64, type: 3}
       propertyPath: m_Name
       value: Portal Refraction Cube (1)
@@ -2523,6 +2527,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BluePortal
       objectReference: {fileID: 0}
+    - target: {fileID: 1206104517113288673, guid: 95bb49f05fa897f4a9ab9fc4f6847390, type: 3}
+      propertyPath: m_TargetTexture
+      value: 
+      objectReference: {fileID: 8400000, guid: 2504a13fd6b26fe49aba89443ae9d7e8, type: 2}
     - target: {fileID: 2329250423972585559, guid: 95bb49f05fa897f4a9ab9fc4f6847390, type: 3}
       propertyPath: m_LocalRotation.w
       value: 1
@@ -2946,6 +2954,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: OrangePortal
       objectReference: {fileID: 0}
+    - target: {fileID: 6777486304051899467, guid: 591323b8484f4484a8a79c1807d2531d, type: 3}
+      propertyPath: m_TargetTexture
+      value: 
+      objectReference: {fileID: 8400000, guid: d280506795a027e4fa01efbfe989a090, type: 2}
     - target: {fileID: 8240943657828497622, guid: 591323b8484f4484a8a79c1807d2531d, type: 3}
       propertyPath: m_Size.z
       value: 0.3
