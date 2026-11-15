@@ -6,10 +6,12 @@ public class Turret : MonoBehaviour
     public float m_MaxDistance;
     public LayerMask m_LaserLayerMask;
     public float m_AngleToFall = 30.0f;
+    bool m_Dead = false;
+    public float m_DeathTorque = 2.0f;
 
     private void Update()
     {
-        bool l_Fallen = Vector3.Dot(transform.up, Vector3.up)<Mathf.Cos(m_AngleToFall*Mathf.Deg2Rad);
+        bool l_Fallen = m_Dead || Vector3.Dot(transform.up, Vector3.up)<Mathf.Cos(m_AngleToFall*Mathf.Deg2Rad);
         m_Laser.gameObject.SetActive(!l_Fallen);
 
         if (!l_Fallen)
@@ -24,6 +26,15 @@ public class Turret : MonoBehaviour
                 {
                     l_RaycastHit.collider.GetComponent<RefractionCube>().Refract();
                 }
+
+                if (l_RaycastHit.collider.CompareTag("Player"))
+                {
+                    l_RaycastHit.collider.GetComponent<FPSController>().Kill();
+                }
+                else if (l_RaycastHit.collider.CompareTag("Turret"))
+                {
+                    l_RaycastHit.collider.GetComponent<Turret>().Kill();
+                }
             }
 
             m_Laser.SetPosition(1, l_Position);
@@ -31,4 +42,18 @@ public class Turret : MonoBehaviour
         }
 
     }
+
+    public void Kill()
+    {
+        if (m_Dead)
+        {
+            return;
+        }
+
+        m_Dead = true;
+        GetComponent<Rigidbody>().AddTorque(transform.right * m_DeathTorque, ForceMode.Impulse);
+    }
+
+
+
 }
