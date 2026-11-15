@@ -3,7 +3,7 @@ using UnityEngine.Events;
 
 public class PortalButton : MonoBehaviour
 {
-    public string m_InteractorTag = "Player";
+    public string m_InteractorTag = "Cube";
     public UnityEvent m_Event;
 
     private void OnTriggerEnter(Collider other)
