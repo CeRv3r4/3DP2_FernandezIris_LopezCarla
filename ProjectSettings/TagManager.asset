@@ -9,6 +9,7 @@ TagManager:
   - Portal
   - Turret
   - RefractionCube
+  - CompanionSpawner
   layers:
   - Default
   - TransparentFX
