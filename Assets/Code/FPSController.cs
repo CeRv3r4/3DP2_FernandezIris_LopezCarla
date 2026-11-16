@@ -67,6 +67,20 @@ public class FPSController : MonoBehaviour
     public float TeleportPortalOffset = 1.0f;
     public float m_MaxValidAngle = 40.0f;
 
+
+    [Header("Resizing")]
+    public Transform m_PortalPreview;
+    public Renderer m_PortalPreviewRenderer;
+    public Material m_ValidMaterial;
+    public Material m_InvalidMaterial;
+    public float m_MinPortalScale = 0.5f;
+    public float m_MaxPortalScale = 2.0f;
+    public float m_ScaleSpeed = 2.0f;
+    float m_PortalScale = 1.0f;
+    Vector3 m_PortalOriginalScale;
+    Portal m_PreviewingPortal;
+
+
     [Header("Grab")]
     public Transform m_GrabTransform;
     public float m_TimeToGrab = 0.8f;
@@ -87,6 +101,7 @@ public class FPSController : MonoBehaviour
         m_Pitch = m_PitchController.eulerAngles.x;
         Cursor.lockState = CursorLockMode.Locked;
         //GameController.GetGameController().Setplayer(this);
+        m_PortalOriginalScale = m_BluePortal.transform.localScale;
     }
 
     private void Update()
@@ -121,7 +136,7 @@ public class FPSController : MonoBehaviour
             l_MouseY = -l_MouseY;
         }
 
-        if (!m_AngleLocked)
+        if (!m_AngleLocked && !m_isDead)
         {
             m_Yaw = m_Yaw + l_MouseX * m_Yawspeed * Time.deltaTime;
             m_Pitch = m_Pitch + l_MouseY * m_Pitchspeed * Time.deltaTime;
@@ -194,14 +209,7 @@ public class FPSController : MonoBehaviour
 
         if(!m_AttachingObject && !m_ObjectAttached && CanShoot())
         {
-            if (MustShoot())
-            {
-                Shoot(m_BluePortal);
-            }
-            if (MustShootOrange())
-            {
-                Shoot(m_OrangePortal);
-            }
+            UpdatePortalPreview();
 
             if (CanGrabObject())
             {
@@ -286,7 +294,7 @@ public class FPSController : MonoBehaviour
 
     bool CanShoot()
     {
-        return true;
+        return !m_isDead;
     }
 
     bool MustShoot()
@@ -333,6 +341,70 @@ public class FPSController : MonoBehaviour
         }
     }
 
+    void UpdatePortalPreview()
+    {
+        if (m_PreviewingPortal == null)
+        {
+            if (MustShoot())
+            {
+                m_PreviewingPortal = m_BluePortal;
+                m_PortalScale = 1.0f;
+            }
+            else if (MustShootOrange())
+            {
+                m_PreviewingPortal = m_OrangePortal;
+                m_PortalScale = 1.0f;
+            }
+            return;
+        }
+
+        bool l_IsBlue = m_PreviewingPortal == m_BluePortal;
+
+        m_PortalScale += Input.GetAxis("Mouse ScrollWheel") * m_ScaleSpeed;
+        m_PortalScale = Mathf.Clamp(m_PortalScale, m_MinPortalScale, m_MaxPortalScale);
+        Vector3 l_Scale = m_PortalOriginalScale * m_PortalScale;
+
+        Ray l_Ray = m_Camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
+        if (Physics.Raycast(l_Ray, out RaycastHit l_RaycastHit, m_MaxShootDistance, m_ShootLayerMask.value))
+        {
+            bool l_Valid = IsPreviewValid(l_RaycastHit, l_Scale);
+            m_PortalPreview.position = l_RaycastHit.point + l_RaycastHit.normal * 0.05f;
+            m_PortalPreview.rotation = Quaternion.LookRotation(l_RaycastHit.normal);
+            m_PortalPreview.localScale = l_Scale;
+            m_PortalPreviewRenderer.sharedMaterial = l_Valid ? m_ValidMaterial : m_InvalidMaterial;
+            m_PortalPreview.gameObject.SetActive(true);
+        }
+        else
+        {
+            m_PortalPreview.gameObject.SetActive(false);
+        }
+
+        int l_Button = l_IsBlue ? m_ShootButton : m_ShootButtonOrange;
+        if (Input.GetMouseButtonUp(l_Button))
+        {
+            m_PreviewingPortal.transform.localScale = l_Scale;
+            Shoot(m_PreviewingPortal);
+            m_PortalPreview.gameObject.SetActive(false);
+            m_PreviewingPortal = null;
+        }
+    }
+
+    bool IsPreviewValid(RaycastHit _RaycastHit, Vector3 _Scale)
+    {
+        Transform l_Transform = m_PreviewingPortal.transform;
+        Vector3 l_OldPosition = l_Transform.position;
+        Quaternion l_OldRotation = l_Transform.rotation;
+        Vector3 l_OldScale = l_Transform.localScale;
+
+        l_Transform.localScale = _Scale;
+        bool l_Valid = m_PreviewingPortal.IsValidPosition(_RaycastHit.point, _RaycastHit.normal);
+
+        l_Transform.position = l_OldPosition;
+        l_Transform.rotation = l_OldRotation;
+        l_Transform.localScale = l_OldScale;
+        return l_Valid;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("DeadZone"))
@@ -369,6 +441,8 @@ public class FPSController : MonoBehaviour
         m_CharacterController.enabled = false;
         transform.position = m_StartPos;
         transform.rotation = m_StartRot;
+        m_Yaw = m_StartRot.eulerAngles.y;
+    m_VerticalSpeed = 0.0f;
         m_CharacterController.enabled = true;
         m_isDead = false;
         m_Deathpanel.SetActive(false);
