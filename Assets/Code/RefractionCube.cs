@@ -40,10 +40,13 @@ public class RefractionCube : MonoBehaviour
             {
                 l_RaycastHit.collider.GetComponent<RefractionCube>().Refract();
             }
+            else if (l_RaycastHit.collider.CompareTag("LaserButton"))
+            {
+                l_RaycastHit.collider.GetComponentInParent<PortalButton>().m_Event.Invoke();
+            }
         }
+
         m_Laser.SetPosition(1, l_Position);
         m_Laser.gameObject.SetActive(true);
-
-
     }
 }

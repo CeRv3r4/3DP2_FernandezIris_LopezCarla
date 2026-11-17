@@ -10,6 +10,8 @@ TagManager:
   - Turret
   - RefractionCube
   - CompanionSpawner
+  - DeadZone
+  - LaserButton
   layers:
   - Default
   - TransparentFX

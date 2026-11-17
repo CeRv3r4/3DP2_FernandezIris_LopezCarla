@@ -68,6 +68,12 @@ public class FPSController : MonoBehaviour
     public float m_MaxValidAngle = 40.0f;
 
 
+    [Header("Checkpoint")]
+    public KeyCode m_RestartAllKeyCode = KeyCode.R;
+    Vector3 m_CheckpointPos;
+    Quaternion m_CheckpointRot;
+
+
     [Header("Resizing")]
     public Transform m_PortalPreview;
     public Renderer m_PortalPreviewRenderer;
@@ -99,6 +105,8 @@ public class FPSController : MonoBehaviour
         m_StartRot = transform.rotation;
         m_Yaw = transform.rotation.eulerAngles.y;
         m_Pitch = m_PitchController.eulerAngles.x;
+        m_CheckpointPos = m_StartPos;
+        m_CheckpointRot = m_StartRot;
         Cursor.lockState = CursorLockMode.Locked;
         //GameController.GetGameController().Setplayer(this);
         m_PortalOriginalScale = m_BluePortal.transform.localScale;
@@ -109,6 +117,10 @@ public class FPSController : MonoBehaviour
         if (m_isDead && Input.GetKeyDown(m_RestartKeyCode))
         {
             Restart();
+        }
+        if (m_isDead && Input.GetKeyDown(m_RestartAllKeyCode))
+        {
+            RestartAll();
         }
         if (m_isDead && Input.GetKeyDown(m_ExitKeyCode))
         {
@@ -233,7 +245,7 @@ public class FPSController : MonoBehaviour
         Ray l_Rray = m_Camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
         if (Physics.Raycast(l_Rray, out RaycastHit l_RaycastHit, m_MaxShootDistance, m_ShootLayerMask.value))
         {
-            if (l_RaycastHit.collider.CompareTag("Cube") || l_RaycastHit.collider.CompareTag("Turret"))
+            if (l_RaycastHit.collider.CompareTag("Cube") || l_RaycastHit.collider.CompareTag("Turret") || l_RaycastHit.collider.CompareTag("RefractionCube"))
             {
                 GrabObject(l_RaycastHit.collider);
             }
@@ -447,13 +459,23 @@ public class FPSController : MonoBehaviour
     public void Restart()
     {
         m_CharacterController.enabled = false;
-        transform.position = m_StartPos;
-        transform.rotation = m_StartRot;
-        m_Yaw = m_StartRot.eulerAngles.y;
-    m_VerticalSpeed = 0.0f;
+        transform.position = m_CheckpointPos;
+        transform.rotation = m_CheckpointRot;
+        m_Yaw = m_CheckpointRot.eulerAngles.y;
+        m_VerticalSpeed = 0.0f;
         m_CharacterController.enabled = true;
         m_isDead = false;
         m_Deathpanel.SetActive(false);
+    }
+
+    public void RestartAll()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+    }
+    public void SetCheckpoint(Vector3 _Position, Quaternion _Rotation)
+    {
+        m_CheckpointPos = _Position;
+        m_CheckpointRot = _Rotation;
     }
 
     void Teleport(Portal _Portal)
