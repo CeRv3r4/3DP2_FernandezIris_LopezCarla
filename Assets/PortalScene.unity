@@ -1994,6 +1994,7 @@ GameObject:
   - component: {fileID: 1386222207}
   - component: {fileID: 1386222206}
   - component: {fileID: 1386222205}
+  - component: {fileID: 1386222208}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -2085,6 +2086,24 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &1386222208
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1386222203}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b71f835600c74b4bb0c94f2332dcc71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHUD
+  m_Player: {fileID: 46919025}
+  m_HUDImage: {fileID: 270638544}
+  m_NoPortal: {fileID: 21300000, guid: f489249a30d2e0e4196b9d24b86ac0ba, type: 3}
+  m_PortalBlue: {fileID: 21300000, guid: cc7037bba0a5f86459702197ec697a66, type: 3}
+  m_PortalOrange: {fileID: 21300000, guid: 5e94f694b000e2e4985c5b79347c2f74, type: 3}
+  m_PortalBoth: {fileID: 21300000, guid: 8a81d4c668a07384cbb4ec76e1a78117, type: 3}
 --- !u!1 &1411563248
 GameObject:
   m_ObjectHideFlags: 0
@@ -2736,7 +2755,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.9, y: 0.9, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 262536011}

@@ -345,6 +345,7 @@ public class FPSController : MonoBehaviour
     {
         if (m_PreviewingPortal == null)
         {
+            // empezem la previsualitzacio al premer el boto
             if (MustShoot())
             {
                 m_PreviewingPortal = m_BluePortal;
@@ -362,28 +363,35 @@ public class FPSController : MonoBehaviour
 
         m_PortalScale += Input.GetAxis("Mouse ScrollWheel") * m_ScaleSpeed;
         m_PortalScale = Mathf.Clamp(m_PortalScale, m_MinPortalScale, m_MaxPortalScale);
-        Vector3 l_Scale = m_PortalOriginalScale * m_PortalScale;
+        Vector3 l_Scale = new Vector3(m_PortalOriginalScale.x * m_PortalScale, m_PortalOriginalScale.y * m_PortalScale, m_PortalOriginalScale.z);
 
         Ray l_Ray = m_Camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
-        if (Physics.Raycast(l_Ray, out RaycastHit l_RaycastHit, m_MaxShootDistance, m_ShootLayerMask.value))
+        if (Physics.Raycast(l_Ray, out RaycastHit l_RaycastHit, m_MaxShootDistance, m_ShootLayerMask.value, QueryTriggerInteraction.Ignore))
         {
             bool l_Valid = IsPreviewValid(l_RaycastHit, l_Scale);
-            m_PortalPreview.position = l_RaycastHit.point + l_RaycastHit.normal * 0.05f;
+            m_PortalPreview.position = l_RaycastHit.point + l_RaycastHit.normal * 0.04f;
             m_PortalPreview.rotation = Quaternion.LookRotation(l_RaycastHit.normal);
             m_PortalPreview.localScale = l_Scale;
             m_PortalPreviewRenderer.sharedMaterial = l_Valid ? m_ValidMaterial : m_InvalidMaterial;
             m_PortalPreview.gameObject.SetActive(true);
+
+            if (l_Valid)
+            {
+                m_PreviewingPortal.transform.position = l_RaycastHit.point + l_RaycastHit.normal * 0.05f;
+                m_PreviewingPortal.transform.rotation = Quaternion.LookRotation(l_RaycastHit.normal);
+                m_PreviewingPortal.transform.localScale = l_Scale;
+            }
+            m_PreviewingPortal.gameObject.SetActive(l_Valid);
         }
         else
         {
             m_PortalPreview.gameObject.SetActive(false);
+            m_PreviewingPortal.gameObject.SetActive(false);
         }
 
         int l_Button = l_IsBlue ? m_ShootButton : m_ShootButtonOrange;
         if (Input.GetMouseButtonUp(l_Button))
         {
-            m_PreviewingPortal.transform.localScale = l_Scale;
-            Shoot(m_PreviewingPortal);
             m_PortalPreview.gameObject.SetActive(false);
             m_PreviewingPortal = null;
         }
